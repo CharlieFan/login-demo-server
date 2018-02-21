@@ -1,0 +1,105 @@
+.Home__home_view___27W5u {
+  padding: 15px;
+}
+
+.Home__add_input___2Upwr {
+  max-width: 700px;
+  margin: 0 auto 30px;
+}
+
+.Home__add_input___2Upwr button {
+  min-width: 80px;
+}.TodoList__todo_list___BkPbi {
+  width: 100%;
+  margin: 0 auto;
+}.TodoItem__todo_item___U5F15 {
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+  box-shadow: 1px 1px 30px 2px rgba(0, 0, 0, 0.5);
+  overflow-wrap: break-word;
+}
+
+.TodoItem__todo_item___U5F15 p {
+  padding: 0 5px;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.TodoItem__todo_item___U5F15 button {
+  width: 4.5rem;
+  margin-left: 5px;
+}
+
+.TodoItem__todo_item___U5F15 .TodoItem__finished___1gsYj {
+  text-decoration: line-through;
+}.Topbar__topbar___DD83c {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 50px;
+  line-height: 50px;
+  background-color: #1f88e5;
+  color: #fff;
+  text-align: center;
+}.Login__login_view___1wSD0 {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+}
+
+.Login__login_view___1wSD0 .Login__form_wrapper___k6Dh- {
+  width: 100%;
+}
+
+.Login__login_view___1wSD0 .Login__form_wrapper___k6Dh- h1 {
+  margin: 20px auto;
+  color: #1f88e5;
+  text-align: center;
+}
+
+.Login__login_view___1wSD0 .Login__form_wrapper___k6Dh- form {
+  max-width: 430px;
+  padding: 0 15px;
+  margin: 30px auto;
+}
+
+.Login__login_view___1wSD0 .Login__form_wrapper___k6Dh- form p {
+  font-size: 0.8rem;
+}
+
+.Login__login_view___1wSD0 .Login__form_wrapper___k6Dh- form a {
+  float: right;
+  font-size: 1.2rem;
+}.Signup__signup_view___1N0Sv {
+  display: flex;
+  height: 100vh;
+  align-items: center;
+}
+
+.Signup__signup_view___1N0Sv .Signup__form_wrapper___18lN2 {
+  width: 100%;
+}
+
+.Signup__signup_view___1N0Sv .Signup__form_wrapper___18lN2 h1 {
+  margin: 20px auto;
+  color: #1f88e5;
+  text-align: center;
+}
+
+.Signup__signup_view___1N0Sv .Signup__form_wrapper___18lN2 form {
+  max-width: 430px;
+  padding: 0 15px;
+  margin: 30px auto;
+}
+
+.Signup__signup_view___1N0Sv .Signup__form_wrapper___18lN2 form p {
+  font-size: 0.8rem;
+}
+
+.Signup__signup_view___1N0Sv .Signup__form_wrapper___18lN2 form a {
+  float: right;
+  font-size: 1.2rem;
+}
