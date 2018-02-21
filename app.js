@@ -28,7 +28,7 @@ app.use('/api', api);
 // Fallback to index.html for React Router
 app.all('/*', function(req, res) {
   res.sendfile('public/index.html')
-})
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

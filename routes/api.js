@@ -1,9 +1,15 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('api respond with a resource');
+/**
+ * GET user Info listing
+ */
+router.get('/getUserInfo', function(req, res, next) {
+  // res.set('Content-Type', 'application/json')
+  res.send({
+    name: 'Jane Doe',
+    age: 28
+  });
 });
 
 module.exports = router;
