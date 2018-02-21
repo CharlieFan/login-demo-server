@@ -1,5 +1,4 @@
 var express = require('express');
-var history = require('connect-history-api-fallback');
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
@@ -10,7 +9,6 @@ var index = require('./routes/index');
 var api = require('./routes/api');
 
 var app = express();
-app.use(history());  // Fallback to index.html for React Router
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -25,7 +23,12 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/api', api);
-app.use('/', index);
+// app.use('/', index);
+
+// Fallback to index.html for React Router
+app.all('/*', function(req, res) {
+  res.sendfile('public/index.html')
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
