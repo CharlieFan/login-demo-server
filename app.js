@@ -22,7 +22,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Route Middlewares:
 app.use('/api', api);
 app.all('/*', function (req, res) {
-    res.sendfile('public/index.html');
+    res.sendfile(path.join(__dirname, 'public/index.html'));
 }); // Fallback to index.html for React Router
 
 // catch 404 and forward to error handler
