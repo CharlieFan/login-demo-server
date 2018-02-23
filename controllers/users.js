@@ -1,4 +1,5 @@
 const getUserInfo = function(req, res) {
+    console.log(process.env['NODE_ENV']);
     res.send('ok');
 };
 

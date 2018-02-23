@@ -19,6 +19,25 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// DB:
+
+const mysql = require('mysql');
+const connection = mysql.createConnection({
+    host: '138.197.18.16',
+    user: 'remote',
+    password: 'efemme123',
+    database: 'user_info'
+});
+
+connection.connect();
+connection.query('SELECT * FROM users', function(err, rows, fields) {
+    // if (err) throw err;
+    console.log(err);
+    console.log(rows);
+});
+
+connection.end();
+
 // Route Middlewares:
 app.use('/api', api);
 app.all('/*', function (req, res) {
