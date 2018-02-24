@@ -21,27 +21,27 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // DB:
 
-const mysql = require('mysql');
-const connection = mysql.createConnection({
-    host: '138.197.18.16',
-    user: 'remote',
-    password: 'efemme123',
-    database: 'user_info'
-});
+// const mysql = require('mysql');
+// const connection = mysql.createConnection({
+//     host: '138.197.18.16',
+//     user: 'remote',
+//     password: 'efemme123',
+//     database: 'user_info'
+// });
 
-connection.connect();
-connection.query('SELECT * FROM users', function(err, rows, fields) {
-    // if (err) throw err;
-    console.log(err);
-    console.log(rows);
-});
+// connection.connect();
+// connection.query('SELECT * FROM users', function(err, rows, fields) {
+//     // if (err) throw err;
+//     console.log(err);
+//     console.log(rows);
+// });
 
-connection.end();
+// connection.end();
 
 // Route Middlewares:
 app.use('/api', api);
 app.all('/*', function (req, res) {
-    res.sendfile(path.join(__dirname, 'public/index.html'));
+    res.sendFile(path.join(__dirname, 'public/index.html'));
 }); // Fallback to index.html for React Router
 
 // catch 404 and forward to error handler
@@ -59,7 +59,10 @@ app.use(function (err, req, res, next) {
 
     // render the error page
     res.status(err.status || 500);
-    res.render('error');
+    res.send({
+        code: err.status,
+        message: err.message
+    });
 });
 
 module.exports = app;

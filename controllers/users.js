@@ -1,6 +1,17 @@
-const getUserInfo = function(req, res) {
-    console.log(process.env['NODE_ENV']);
-    res.send('ok');
+const userModule = require('../model/users');
+
+
+const getUserInfo = function(req, res, next) {
+    // console.log(req.query);
+    let id = req.query.id;
+    if (!id) {
+        let err = new Error('id cannot be blank');
+        err.status = 400;
+        throw err;
+    }
+
+    userModule.getUserById(id);
+    // res.send('ok');
 };
 
 const signup = function(req, res) {
