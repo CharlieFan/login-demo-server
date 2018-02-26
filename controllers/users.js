@@ -7,11 +7,14 @@ const getUserInfo = function(req, res, next) {
     if (!id) {
         let err = new Error('id cannot be blank');
         err.status = 400;
-        throw err;
+        next(err);
     }
 
-    userModule.getUserById(id);
-    // res.send('ok');
+    userModule.getUserById(id, next).then((data) => {
+        res.send(data);
+    }).catch((err) => {
+        next(err);
+    });
 };
 
 const signup = function(req, res) {

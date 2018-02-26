@@ -1,26 +1,27 @@
-const connection = require('../config/dbConnection');
+const connection = require('./connection').connection;
 
 const getUserById = function(id) {
-    if (!id) {
-        let err = new Error('Bad Request');
-        err.status = 400;
-        throw err;
-    }
-
+    let sql = `SELECT * from users WHERE id = ${id};`;
     connection.connect();
 
-    connection.query(`SELECT * from users WHERE id = ${id};`, function(err, rows, fields) {
-        // if (err) {
-        //     let err = new Error('Network Error');
-        //     err.status = 500;
-        //     throw err;
-        // }
-        err = new Error('Network Error');
-        err.status = 500;
-        throw err;
-    });
+    return new Promise((resolve, reject) => {
+        if (!id) {
+            let err = new Error('Bad Request');
+            err.status = 400;
+            reject(err);
+        }
 
-    connection.end();
+        connection.query(sql, function(err, rows, fields) {
+            if (err) {
+                let err = new Error('Network Error');
+                err.status = 500;
+                reject(err);
+            }
+            console.log(rows);
+            resolve(rows[0]);
+        });
+        connection.end();
+    });
 };
 
 module.exports = {
