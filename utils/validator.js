@@ -8,22 +8,31 @@ const validateRules = {
             }
         });
     },
-    isEmail(value) {
+    isEmail(value, name) {
         const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/;
 
         return new Promise((resolve, reject) => {
             if (pattern.test(value)) {
                 resolve(true);
             } else {
-                reject(new Error('Invalid email format'));
+                reject(new Error(`${name} is in Invalid email format`));
+            }
+        });
+    },
+    isNumber(value, name) {
+        return new Promise((resolve, reject) => {
+            if (typeof(value) !== 'number') {
+                reject(new Error(`${name} must be a number`))
+            } else {
+                resolve(true);
             }
         });
     },
     maxLength(length) {
-        return function(value) {
+        return function(value, name) {
             return new Promise((resolve, reject) => {
                 if (value.length >= length) {
-                    reject(new Error(`should be less than ${length} charachers`));
+                    reject(new Error(`${name} should be less than ${length} charachers`));
                 } else {
                     resolve(true);
                 }
@@ -31,10 +40,10 @@ const validateRules = {
         };
     },
     minLength(length) {
-        return function(value) {
+        return function(value, name) {
             return new Promise((resolve, reject) => {
                 if (value.length < length) {
-                    reject(new Error(`should be more than ${length} charachers`));
+                    reject(new Error(`${name} should be more than ${length} charachers`));
                 } else {
                     resolve(true);
                 }
@@ -52,11 +61,40 @@ const validator = function (field, ...rules) {
     }));
 };
 
-const validateAll = function(fields, schema,) {
+const validate = function(field, schema) {
+    let rules = [];
+    if (!field || !schema) {
+        return false;
+    }
 
+    if (schema.isRequired) {
+        rules.push(validateRules.required);
+    }
+
+    switch (schema.type) {
+        case 'email':
+            rules.push(validateRules.isEmail);
+            break;
+        case 'number':
+            rules.push(validateRules.isNumber);
+            break;
+        default:
+            break;
+    }
+
+    if (schema.minLength) {
+        rules.push(validateRules.minLength(schema.minLength));
+    }
+
+    if (schema.maxLength) {
+        rules.push(validateRules.maxLength(schema.maxLength));
+    }
+
+    return validator(field, ...rules);
 };
 
 module.exports = {
     validateRules,
-    validator
+    validator,
+    validate
 };
