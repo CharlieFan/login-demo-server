@@ -1,12 +1,10 @@
 const pool = require('./connection').pool;
-const validator = require('../utils/validator').validator;
-const validateRules = require('../utils/validator').validateRules;
 const validate = require('../utils/validator').validate;
 
 const userSchema = {
     email: {
         type: 'email',
-        isRequired: true,
+        isRequired: true
     },
     password: {
         type: 'text',
@@ -59,6 +57,10 @@ const signupUser = function(data) {
             if (data.hasOwnProperty(prop)) {
                 if (!data[prop]) {
                     data[prop] = null;
+                }
+                
+                if (prop !== 'password') {
+                    data[prop] = data[prop].trim();
                 }
             }
         }

@@ -1,13 +1,30 @@
 const userModule = require('../model/users');
-// const validator = require('../utils/validator').validator;
-// const validateRules = require('../utils/validator').validateRules;
+const jwt = require('jsonwebtoken');
+
+const generateToken = function(data) {
+    return jwt.sign(data, '12345', { expiresIn: 60 * 60 });
+};
+
+// const verifyToken = function (token) {
+//     jwt.verify
+// };
 
 const getUserInfo = function(req, res, next) {
-    // console.log(req.query);
-    let id = req.query.id;
+    console.log(req.get('x-auth'));
+    let token = req.get('x-auth');
+    let decoded = {};
+
+    try {
+        decoded = jwt.verify(token, '12345');
+    } catch (err) {
+        err.status = 403;
+        next(err);
+    }
+
+    let id = decoded.id;
     if (!id) {
-        let err = new Error('id cannot be blank');
-        err.status = 400;
+        let err = new Error('User does not exist');
+        err.status = 403;
         next(err);
     }
 
@@ -20,13 +37,19 @@ const getUserInfo = function(req, res, next) {
 
 const signup = function(req, res, next) {
     // console.log(req.body);
-    
     userModule.signupUser(req.body).then((data) => {
-        res.send(data);
+        let token = generateToken(data);
+        res.set({
+            'x-auth': token
+        });
+
+        res.send({
+            code: res.status,
+            message: 'ok'
+        });
     }).catch((err) => {
         next(err);
     });
-    // res.send(req.body);
 };
 
 const login = function(req, res) {
