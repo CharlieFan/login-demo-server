@@ -10,7 +10,7 @@ const generateToken = function(data) {
 // };
 
 const getUserInfo = function(req, res, next) {
-    console.log(req.get('x-auth'));
+    // console.log(req.get('x-auth'));
     let token = req.get('x-auth');
     let decoded = {};
 

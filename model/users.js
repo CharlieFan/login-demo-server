@@ -1,5 +1,6 @@
 const pool = require('./connection').pool;
 const validate = require('../utils/validator').validate;
+const redisClient = require('./connection').client;
 
 const userSchema = {
     email: {
@@ -30,7 +31,7 @@ const getUserById = function(id) {
             return false;
         }
 
-        pool.query(sql, function(err, rows, fields) {
+        pool.query(sql, function(err, rows) {
             if (err) {
                 let err = new Error('Network Error');
                 err.status = 500;
@@ -73,7 +74,7 @@ const signupUser = function(data) {
             let sql = 'INSERT INTO users SET email = ?, password = ?, username = ?, signup_date = ?';
             let CURRENT_TIMESTAMP = { toSqlString: function() { return 'CURRENT_TIMESTAMP()'; }};
 
-            pool.query(sql, [data.email, data.password, data.username, CURRENT_TIMESTAMP], function(err, result, fields) {
+            pool.query(sql, [data.email, data.password, data.username, CURRENT_TIMESTAMP], function(err, result) {
                 if (err) {
                     err.status = 400;
                     reject(err);
