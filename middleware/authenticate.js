@@ -1,9 +1,11 @@
 const jwt = require('jsonwebtoken');
+const config = require('../config/dbconfig.json');
 const errMaker = require('../utils/utils').errorMaker;
 const getToken = require('../model/users').getToken;
+const ExpireTime = 60 * 60; // ExpireTime in seconds
 
 const generateToken = function(data) {
-    return jwt.sign(data, '12345', { expiresIn: 60 * 60 });
+    return jwt.sign(data, config.redis.salt, { expiresIn: ExpireTime });
 };
 
 const authenticate = function(req, res, next) {
@@ -11,21 +13,20 @@ const authenticate = function(req, res, next) {
     let decoded = {};
 
     try {
-        decoded = jwt.verify(token, '12345');
+        decoded = jwt.verify(token, config.redis.salt);
     } catch (err) {
         // console.log(err);
         err.status = 401;
-        next(err);
+        return next(err);
     }
     let id = decoded.id;
     if (!id) {
-        next(errMaker('User does not exist', 401));
+        return next(errMaker('User does not exist', 401));
     }
 
     getToken(id).then((reply) => {
         if (reply === token) {
             req.id = id;
-
             next();
         } else {
             next(errMaker('Authentication failed', 401));
@@ -37,5 +38,6 @@ const authenticate = function(req, res, next) {
 
 module.exports = {
     authenticate,
-    generateToken
+    generateToken,
+    ExpireTime
 };

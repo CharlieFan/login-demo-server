@@ -2,6 +2,7 @@ const pool = require('./connection').pool;
 const validate = require('../utils/validator').validate;
 const redisClient = require('./connection').client;
 const errMaker = require('../utils/utils').errorMaker;
+const ExpireTime = require('../middleware/authenticate').ExpireTime;
 
 const userSchema = {
     email: {
@@ -21,6 +22,7 @@ const userSchema = {
     }
 };
 
+// Save token in redis
 const setToken = function(payload) {
     redisClient.on('error', function(err) {
         err.status = 500;
@@ -28,18 +30,20 @@ const setToken = function(payload) {
     });
 
     return new Promise((resolve, reject) => {
-        redisClient.set(payload.id, payload.token, function(err, reply) {
+        redisClient.set(payload.id, payload.token, 'EX', ExpireTime, function(err, reply) {
             if (err) {
                 err.status = 500;
                 return reject(err);
             }
-            
+           
+            if (!reply) return reject(errMaker('Network Error', 500));
             return resolve(payload.token);
         });
 
     });
 };
 
+// Get token from redis
 const getToken = function(id) {
     redisClient.on('error', function(err) {
         err.status = 500;
@@ -50,8 +54,7 @@ const getToken = function(id) {
         redisClient.get(id, function(err, reply) {
             if (err) {
                 err.status = 500;
-                console.log(err)
-                
+                // console.log(err)
                 return reject(err);
             }
             
@@ -61,6 +64,7 @@ const getToken = function(id) {
     });
 };
 
+// select user from Mysql
 const getUserById = function(id) {
     return new Promise((resolve, reject) => {
         let sql = `SELECT username, email from users WHERE id = ${id};`;
@@ -77,6 +81,7 @@ const getUserById = function(id) {
     });
 };
 
+// Insert user into Mysql
 const signupUser = function(data) {
     return new Promise((resolve, reject) => {
         if (!data) {

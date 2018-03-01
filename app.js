@@ -44,6 +44,7 @@ app.use(function (err, req, res, next) {
         code: err.status || 500,
         message: err.message
     });
+    next();
 });
 
 module.exports = app;
