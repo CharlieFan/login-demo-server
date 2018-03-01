@@ -1,57 +1,40 @@
 const userModule = require('../model/users');
-const jwt = require('jsonwebtoken');
+const errMaker = require('../utils/utils').errorMaker;
+const generateToken = require('../middleware/authenticate').generateToken;
 
-const generateToken = function(data) {
-    return jwt.sign(data, '12345', { expiresIn: 60 * 60 });
-};
+// Get User Information by id
+const getUserInfo = function(req) {
+    let id = req.id;
 
-// const verifyToken = function (token) {
-//     jwt.verify
-// };
-
-const getUserInfo = function(req, res, next) {
-    // console.log(req.get('x-auth'));
-    let token = req.get('x-auth');
-    let decoded = {};
-
-    try {
-        decoded = jwt.verify(token, '12345');
-    } catch (err) {
-        err.status = 403;
-        next(err);
-    }
-
-    let id = decoded.id;
     if (!id) {
-        let err = new Error('User does not exist');
-        err.status = 403;
-        next(err);
+        return Promise.reject(errMaker('User does not exist', 401));
     }
 
-    userModule.getUserById(id, next).then((data) => {
-        data.length > 0 ? res.send(data[0]) : res.send({});
+    return userModule.getUserById(id).then((user) => {
+        return Promise.resolve(user[0]);
     }).catch((err) => {
-        next(err);
+        return Promise.reject(err);
     });
 };
 
-const signup = function(req, res, next) {
-    // console.log(req.body);
-    userModule.signupUser(req.body).then((data) => {
+// Add Signup a new user
+const signup = function(req) {
+    return userModule.signupUser(req.body).then((data) => {
+        // console.log(data);
         let token = generateToken(data);
-        res.set({
-            'x-auth': token
+        return userModule.setToken({
+            id: data.id,
+            token
         });
-
-        res.send({
-            code: res.status,
-            message: 'ok'
-        });
+    }).then((token) => {
+        if (!token) return Promise.reject(errMaker('Network Error', 500));
+        return Promise.resolve(token);
     }).catch((err) => {
-        next(err);
+        return Promise.reject(err);
     });
 };
 
+// Log a user in
 const login = function(req, res) {
     res.send(req.body);
 };

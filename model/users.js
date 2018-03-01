@@ -1,6 +1,7 @@
 const pool = require('./connection').pool;
 const validate = require('../utils/validator').validate;
 const redisClient = require('./connection').client;
+const errMaker = require('../utils/utils').errorMaker;
 
 const userSchema = {
     email: {
@@ -20,27 +21,58 @@ const userSchema = {
     }
 };
 
+const setToken = function(payload) {
+    redisClient.on('error', function(err) {
+        err.status = 500;
+        return Promise.reject(err);
+    });
+
+    return new Promise((resolve, reject) => {
+        redisClient.set(payload.id, payload.token, function(err, reply) {
+            if (err) {
+                err.status = 500;
+                return reject(err);
+            }
+            
+            return resolve(payload.token);
+        });
+
+    });
+};
+
+const getToken = function(id) {
+    redisClient.on('error', function(err) {
+        err.status = 500;
+        return Promise.reject(err);
+    });
+
+    return new Promise((resolve, reject) => {
+        redisClient.get(id, function(err, reply) {
+            if (err) {
+                err.status = 500;
+                console.log(err)
+                
+                return reject(err);
+            }
+            
+            return resolve(reply);
+        });
+
+    });
+};
+
 const getUserById = function(id) {
     return new Promise((resolve, reject) => {
         let sql = `SELECT username, email from users WHERE id = ${id};`;
 
-        if (!id) {
-            let err = new Error('Bad Request');
-            err.status = 400;
-            reject(err);
-            return false;
-        }
+        if (!id) return reject(errMaker('Bad Request', 400));
 
         pool.query(sql, function(err, rows) {
-            if (err) {
-                let err = new Error('Network Error');
-                err.status = 500;
-                reject(err);
-                return false;
-            }
+            if (err) return reject(errMaker('Network Error', 500));
             // console.log(rows);
-            resolve(rows);
-            return false;
+            if (rows.length <=0 ) return reject(errMaker('No User Found', 400));
+
+            return resolve(rows);
         });
     });
 };
@@ -50,8 +82,7 @@ const signupUser = function(data) {
         if (!data) {
             let err = new Error('Bad Request');
             err.status = 400;
-            reject(err);
-            return false;
+            return reject(err);
         }
 
         for(let prop in data) {
@@ -70,27 +101,27 @@ const signupUser = function(data) {
             validate({value: data.email, name: 'email'}, userSchema.email),
             validate({value: data.password, name: 'password'}, userSchema.password),
             validate({value: data.username, name: 'username'}, userSchema.username)
-        ]).then(() => {
+        ]).then(function() {
             let sql = 'INSERT INTO users SET email = ?, password = ?, username = ?, signup_date = ?';
             let CURRENT_TIMESTAMP = { toSqlString: function() { return 'CURRENT_TIMESTAMP()'; }};
 
             pool.query(sql, [data.email, data.password, data.username, CURRENT_TIMESTAMP], function(err, result) {
                 if (err) {
                     err.status = 400;
-                    reject(err);
-                    return false;
+                    return reject(err);
                 }
-                resolve({id: result.insertId});
-                return false;
+                return resolve({id: result.insertId});
             });
         }).catch((err) => {
             err.status = 400;
-            reject(err);
+            return reject(err);
         });
     });
 };
 
 module.exports = {
+    setToken,
+    getToken,
     getUserById,
     signupUser
 };
