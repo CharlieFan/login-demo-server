@@ -2,7 +2,9 @@ const pool = require('./connection').pool;
 const validate = require('../utils/validator').validate;
 const redisClient = require('./connection').client;
 const errMaker = require('../utils/utils').errorMaker;
-const ExpireTime = require('../middleware/authenticate').ExpireTime;
+const hashing = require('../middleware/hashing');
+
+const ExpireTime = 60 * 60;
 
 const userSchema = {
     email: {
@@ -106,11 +108,15 @@ const signupUser = function(data) {
             validate({value: data.email, name: 'email'}, userSchema.email),
             validate({value: data.password, name: 'password'}, userSchema.password),
             validate({value: data.username, name: 'username'}, userSchema.username)
-        ]).then(function() {
+        ]).then(() => {
+            return hashing.hashingPass(data.password);
+        }).then((hash) => {
+            console.log(hash)
+            
             let sql = 'INSERT INTO users SET email = ?, password = ?, username = ?, signup_date = ?';
             let CURRENT_TIMESTAMP = { toSqlString: function() { return 'CURRENT_TIMESTAMP()'; }};
 
-            pool.query(sql, [data.email, data.password, data.username, CURRENT_TIMESTAMP], function(err, result) {
+            pool.query(sql, [data.email, hash, data.username, CURRENT_TIMESTAMP], function(err, result) {
                 if (err) {
                     err.status = 400;
                     return reject(err);
