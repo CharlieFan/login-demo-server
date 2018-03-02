@@ -35,6 +35,20 @@ router.post('/signup', function(req, res, next) {
 /**
  * Login API
  */
-router.post('/login', controller.user.login);
+router.post('/login', function(req, res, next) {
+    controller.user.login(req).then((token) => {
+        // console.log(token);
+        res.set({
+            'x-auth': token
+        });
+
+        res.status(200).send({
+            message: 'Login successfully'
+        });
+    }).catch((err) => {
+        // console.log(err);
+        next(err);
+    });
+});
 
 module.exports = router;

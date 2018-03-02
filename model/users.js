@@ -3,6 +3,7 @@ const validate = require('../utils/validator').validate;
 const redisClient = require('./connection').client;
 const errMaker = require('../utils/utils').errorMaker;
 const hashing = require('../middleware/hashing');
+// console.log(hashing)
 
 const ExpireTime = 60 * 60;
 
@@ -66,7 +67,7 @@ const getToken = function(id) {
     });
 };
 
-// select user from Mysql
+// select all user info from Mysql
 const getUserById = function(id) {
     return new Promise((resolve, reject) => {
         let sql = `SELECT username, email from users WHERE id = ${id};`;
@@ -79,6 +80,21 @@ const getUserById = function(id) {
             if (rows.length <=0 ) return reject(errMaker('No User Found', 400));
 
             return resolve(rows);
+        });
+    });
+};
+
+// select login info:
+const getLoginInfo = function(data) {
+    if (!data || !data.email || !data.password) return Promise.reject(errMaker('email and password should not be blank', 400));
+    return new Promise((resolve, reject) => {
+        let sql = `SELECT id, email, password from users WHERE email = '${data.email}'`;
+        pool.query(sql, (err, rows) => {
+            if (err) return reject(errMaker('Network Error (DB)', 500));
+
+            if (rows.length <= 0) return reject(errMaker('User does not exist', 400));
+
+            return resolve(rows[0]);
         });
     });
 };
@@ -111,8 +127,7 @@ const signupUser = function(data) {
         ]).then(() => {
             return hashing.hashingPass(data.password);
         }).then((hash) => {
-            console.log(hash)
-            
+            // console.log(hash);
             let sql = 'INSERT INTO users SET email = ?, password = ?, username = ?, signup_date = ?';
             let CURRENT_TIMESTAMP = { toSqlString: function() { return 'CURRENT_TIMESTAMP()'; }};
 
@@ -134,5 +149,6 @@ module.exports = {
     setToken,
     getToken,
     getUserById,
-    signupUser
+    signupUser,
+    getLoginInfo
 };
