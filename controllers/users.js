@@ -5,6 +5,19 @@ const verifyPass = require('../middleware/hashing').verifyPass;
 // console.log(hashing);
 
 // Get User Information by id
+const logout = function(id) {
+    return userModule.removeToken(id).then((reply) => {
+        if (reply) {
+            return Promise.resolve({
+                message: 'logout successfully'
+            });
+        }
+    }).catch((err) => {
+        return Promise.reject(err);
+    });
+};
+
+
 const getUserInfo = function(req) {
     let id = req.id;
 
@@ -62,5 +75,6 @@ const login = function(req) {
 module.exports = {
     signup,
     login,
-    getUserInfo
+    getUserInfo,
+    logout
 };

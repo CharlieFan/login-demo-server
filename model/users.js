@@ -67,6 +67,25 @@ const getToken = function(id) {
     });
 };
 
+// Destroy token from redis
+const removeToken = function(id) {
+    redisClient.on('error', function(err) {
+        err.status = 500;
+        return Promise.reject(err);
+    });
+
+    return new Promise((resolve, reject) => {
+        redisClient.del(id, function(err, reply) {
+            if (err) {
+                err.status = 500;
+                return reject(err);
+            }
+
+            return resolve(reply);
+        });
+    });
+};
+
 // select all user info from Mysql
 const getUserById = function(id) {
     return new Promise((resolve, reject) => {
@@ -147,6 +166,7 @@ const signupUser = function(data) {
 
 module.exports = {
     setToken,
+    removeToken,
     getToken,
     getUserById,
     signupUser,

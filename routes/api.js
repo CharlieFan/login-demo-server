@@ -51,4 +51,16 @@ router.post('/login', function(req, res, next) {
     });
 });
 
+/**
+ * Logout API
+ */
+router.post('/logout', authenticate, function(req, res, next) {
+    let id = req.id;
+    controller.user.logout(id).then((reply) => {
+        res.status(200).send(reply);
+    }).catch((err) => {
+        next(err);
+    });
+});
+
 module.exports = router;
