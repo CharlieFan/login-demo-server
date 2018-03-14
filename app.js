@@ -19,6 +19,15 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// header middleware
+app.use(function(req, res, next) {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Headers', 'x-auth, Content-Type');
+    res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+    // res.setHeader('Access-Control-Allow-Credentials', true);
+    next();
+});
+
 // Route Middlewares:
 app.use('/api', api);
 app.all('/*', function (req, res) {

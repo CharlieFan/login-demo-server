@@ -31,7 +31,14 @@ const validateRules = {
     maxLength(length) {
         return function(value, name) {
             return new Promise((resolve, reject) => {
-                if (value.length >= length) {
+                let valueLength;
+                if (!value) {
+                    valueLength = 0;
+                } else {
+                    valueLength = value.length;
+                }
+                
+                if (valueLength >= length) {
                     reject(new Error(`${name} should be less than ${length} charachers`));
                 } else {
                     resolve(true);
@@ -42,7 +49,14 @@ const validateRules = {
     minLength(length) {
         return function(value, name) {
             return new Promise((resolve, reject) => {
-                if (value.length < length) {
+                let valueLength;
+                if (!value) {
+                    valueLength = 0;
+                } else {
+                    valueLength = value.length;
+                }
+
+                if (valueLength < length) {
                     reject(new Error(`${name} should be more than ${length} charachers`));
                 } else {
                     resolve(true);

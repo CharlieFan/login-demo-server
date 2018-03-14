@@ -3,6 +3,7 @@ const validate = require('../utils/validator').validate;
 const redisClient = require('./connection').client;
 const errMaker = require('../utils/utils').errorMaker;
 const hashing = require('../middleware/hashing');
+const dataFormator = require('./dataUtils').dataFormator;
 // console.log(hashing)
 
 const ExpireTime = 60 * 60;
@@ -20,8 +21,8 @@ const userSchema = {
     },
     username: {
         type: 'text',
-        minLength: 1,
-        maxLength: 30
+        maxLength: 30,
+        isTrim: true
     }
 };
 
@@ -120,23 +121,12 @@ const getLoginInfo = function(data) {
 
 // Insert user into Mysql
 const signupUser = function(data) {
+    data = dataFormator(data, userSchema);
     return new Promise((resolve, reject) => {
         if (!data) {
             let err = new Error('Bad Request');
             err.status = 400;
             return reject(err);
-        }
-
-        for(let prop in data) {
-            if (data.hasOwnProperty(prop)) {
-                if (!data[prop]) {
-                    data[prop] = null;
-                }
-                
-                if (prop !== 'password') {
-                    data[prop] = data[prop].trim();
-                }
-            }
         }
 
         Promise.all([
