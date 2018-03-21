@@ -112,7 +112,9 @@ const getLoginInfo = function(data) {
         pool.query(sql, (err, rows) => {
             if (err) return reject(errMaker('Network Error (DB)', 500));
 
-            if (rows.length <= 0) return reject(errMaker('User does not exist', 400));
+            if (rows.length <= 0) {
+                return reject(errMaker('User does not exist', 401));
+            }
 
             return resolve(rows[0]);
         });

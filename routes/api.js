@@ -36,14 +36,13 @@ router.post('/signup', function(req, res, next) {
  * Login API
  */
 router.post('/login', function(req, res, next) {
-    controller.user.login(req).then((token) => {
-        // console.log(token);
+    controller.user.login(req).then((reply) => {
         res.set({
-            'x-auth': token
+            'x-auth': reply.token
         });
 
         res.status(200).send({
-            message: 'Login successfully'
+            id: reply.id
         });
     }).catch((err) => {
         // console.log(err);

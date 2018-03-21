@@ -63,6 +63,11 @@ const login = function(req) {
             return userModule.setToken({
                 id,
                 token
+            }).then(() => {
+                return Promise.resolve({
+                    id,
+                    token
+                });
             });
         }).catch((err) => {
             return Promise.reject(err);
