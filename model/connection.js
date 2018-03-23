@@ -1,4 +1,4 @@
-const config = require('../config/dbconfig.json');
+const config = require('../config/dbconfig.json') || null;
 const mysql = require('mysql');
 const redis = require('redis');
 
