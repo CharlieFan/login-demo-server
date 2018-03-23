@@ -35,12 +35,15 @@
 .TodoItem__todo_item___U5F15 .TodoItem__finished___1gsYj {
   text-decoration: line-through;
 }.Topbar__topbar___DD83c {
+  display: flex;
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 50px;
-  line-height: 50px;
+  padding: 0 5px;
+  align-items: center;
+  justify-content: space-between;
   background-color: #1f88e5;
   color: #fff;
   text-align: center;
