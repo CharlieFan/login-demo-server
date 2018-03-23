@@ -1,6 +1,7 @@
-const config = require('../config/dbconfig.json') || null;
 const mysql = require('mysql');
 const redis = require('redis');
+const config = null;
+// const config = require('../config/dbconfig.json') || null;
 
 const mySqlConfig = {
     host: process.env.SQL_HOST || config.host,

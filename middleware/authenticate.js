@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const config = require('../config/dbconfig.json') || null;
+// const config = require('../config/dbconfig.json') || null;
+const config = null;
 const errMaker = require('../utils/utils').errorMaker;
 const getToken = require('../model/users').getToken;
 const ExpireTime = 60 * 60; // ExpireTime in seconds
