@@ -4,8 +4,10 @@ const errMaker = require('../utils/utils').errorMaker;
 const getToken = require('../model/users').getToken;
 const ExpireTime = 60 * 60; // ExpireTime in seconds
 
+let salt = process.env.REDIS_SALT || config.redis.salt;
+
 const generateToken = function(data) {
-    return jwt.sign(data, config.redis.salt, { expiresIn: ExpireTime });
+    return jwt.sign(data, salt, { expiresIn: ExpireTime });
 };
 
 const authenticate = function(req, res, next) {
@@ -13,7 +15,7 @@ const authenticate = function(req, res, next) {
     let decoded = {};
 
     try {
-        decoded = jwt.verify(token, config.redis.salt);
+        decoded = jwt.verify(token, salt);
     } catch (err) {
         // console.log(err);
         err.status = 401;
