@@ -19008,7 +19008,7 @@ const getUserInfo = () => {
 
 
 const myAxios = __WEBPACK_IMPORTED_MODULE_0_axios___default.a.create({
-    baseURL: 'http://localhost:3000/api',
+    baseURL: 'http://localhost/api',
     timeout: 20000,
     headers: {
         'Content-Type': 'application/json'
