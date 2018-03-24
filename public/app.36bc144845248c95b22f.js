@@ -19006,9 +19006,10 @@ const getUserInfo = () => {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_utils_storage__ = __webpack_require__(31);
 
 
+const baseURL = 'http://obscure-journey-77340.herokuapp.com/api';
 
 const myAxios = __WEBPACK_IMPORTED_MODULE_0_axios___default.a.create({
-    baseURL: 'http://localhost/api',
+    baseURL: baseURL || 'http://localhost:3000/api',
     timeout: 20000,
     headers: {
         'Content-Type': 'application/json'
