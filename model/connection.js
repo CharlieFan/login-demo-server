@@ -1,7 +1,7 @@
 const mysql = require('mysql');
 const redis = require('redis');
-const config = null;
-// const config = require('../config/dbconfig.json') || null;
+const config = process.env.ENV === 'prod' ? null : require('../config/dbconfig.json');
+// const config = require('../config/dbconfig.json');
 
 const mySqlConfig = {
     host: process.env.SQL_HOST || config.host,
@@ -13,7 +13,7 @@ const mySqlConfig = {
 const redisConfig = {
     host: process.env.REDIS_HOST || config.redis.host,
     password: process.env.REDIS_PASS || config.redis.password,
-    port: process.env.REDIS_PORT || config.redis.port 
+    port: process.env.REDIS_PORT || config.redis.port
 };
 // Connection Mysql:
 // const connection = mysql.createConnection({
