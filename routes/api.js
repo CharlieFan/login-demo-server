@@ -62,4 +62,22 @@ router.post('/logout', authenticate, function(req, res, next) {
     });
 });
 
+/**
+ * Add Todo:
+ */
+router.post('/todos/add', authenticate, function(req, res, next) {
+    let data = Object.assign({
+        owner_id: req.id
+    }, req.body, req.id);
+    // res.status(200).send(data);
+    controller.todos.addNew(data).then((reply) => {
+        // res.status(200).send({
+        //     id,
+        //     msg: 'add'
+        // });
+    }).catch((err) => {
+        next(err);
+    });
+});
+
 module.exports = router;

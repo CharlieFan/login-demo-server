@@ -6,7 +6,8 @@ const dataFormator = function(data, schema) {
     for (let prop in schema) {
         if (schema.hasOwnProperty(prop)) {
             if (!data[prop]) {
-                data[prop] = null;
+                let defaultV = schema[prop].hasOwnProperty('defaultValue') ? schema[prop].defaultValue : null;
+                data[prop] = defaultV;
             }
 
             if (schema[prop].isTrim && data[prop]) {

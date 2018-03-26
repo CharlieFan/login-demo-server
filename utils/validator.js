@@ -63,7 +63,37 @@ const validateRules = {
                 }
             });
         };
-    }
+    },
+    max(limit) {
+        if (typeof(limit) !== 'number') {
+            throw new Error('param must be a number');
+        }
+
+        return function(value, name) {
+            return new Promise((resolve, reject) => {
+                if (value > limit) {
+                    reject(new Error(`${name} should be less than ${limit}`));
+                } else {
+                    resolve(true);
+                }
+            });
+        };
+    },
+    min(limit) {
+        if (typeof(limit) !== 'number') {
+            throw new Error('param must be a number');
+        }
+
+        return function(value, name) {
+            return new Promise((resolve, reject) => {
+                if (value < limit) {
+                    reject(new Error(`${name} should be larger than ${limit}`));
+                } else {
+                    resolve(true);
+                }
+            });
+        };
+    },
 };
 
 const validator = function (field, ...rules) {

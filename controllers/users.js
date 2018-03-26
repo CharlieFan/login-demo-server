@@ -1,4 +1,4 @@
-const userModule = require('../model/users');
+const userModel = require('../model/users');
 const errorMaker = require('../utils/utils').errorMaker;
 const generateToken = require('../middleware/authenticate').generateToken;
 const verifyPass = require('../middleware/hashing').verifyPass;
@@ -6,7 +6,7 @@ const verifyPass = require('../middleware/hashing').verifyPass;
 
 // Get User Information by id
 const logout = function(id) {
-    return userModule.removeToken(id).then((reply) => {
+    return userModel.removeToken(id).then((reply) => {
         if (reply) {
             return Promise.resolve({
                 message: 'logout successfully'
@@ -25,7 +25,7 @@ const getUserInfo = function(req) {
         return Promise.reject(errorMaker('User does not exist', 401));
     }
 
-    return userModule.getUserById(id).then((user) => {
+    return userModel.getUserById(id).then((user) => {
         return Promise.resolve(user[0]);
     }).catch((err) => {
         return Promise.reject(err);
@@ -34,10 +34,10 @@ const getUserInfo = function(req) {
 
 // Add Signup a new user
 const signup = function(req) {
-    return userModule.signupUser(req.body).then((data) => {
+    return userModel.signupUser(req.body).then((data) => {
         // console.log(data);
         let token = generateToken(data);
-        return userModule.setToken({
+        return userModel.setToken({
             id: data.id,
             token
         });
@@ -51,7 +51,7 @@ const signup = function(req) {
 
 // Log a user in
 const login = function(req) {
-    return userModule.getLoginInfo(req.body).then((reply) => {
+    return userModel.getLoginInfo(req.body).then((reply) => {
         let password = req.body.password;
         let hash = reply.password;
         let id = reply.id;
@@ -60,7 +60,7 @@ const login = function(req) {
             if (!reply) return Promise.reject(errorMaker('Email or Password are wrong', 401));
 
             let token = generateToken({id});
-            return userModule.setToken({
+            return userModel.setToken({
                 id,
                 token
             }).then(() => {
