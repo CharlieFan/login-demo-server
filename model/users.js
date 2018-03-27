@@ -4,6 +4,7 @@ const redisClient = require('./connection').client;
 const errMaker = require('../utils/utils').errorMaker;
 const hashing = require('../middleware/hashing');
 const dataFormator = require('./dataUtils').dataFormator;
+const dbErrhandler = require('./dataUtils').dbErrhandler
 // console.log(hashing)
 
 const ExpireTime = 60 * 60;
@@ -123,13 +124,14 @@ const getLoginInfo = function(data) {
 
 // Insert user into Mysql
 const signupUser = function(data) {
-    data = dataFormator(data, userSchema);
     return new Promise((resolve, reject) => {
         if (!data) {
             let err = new Error('Bad Request');
             err.status = 400;
             return reject(err);
         }
+
+        data = dataFormator(data, userSchema);
 
         Promise.all([
             validate({value: data.email, name: 'email'}, userSchema.email),
@@ -153,24 +155,6 @@ const signupUser = function(data) {
             return reject(err);
         });
     });
-};
-
-const dbErrhandler = function(err) {
-    let code = err.code;
-    let newError = new Error();
-    let errValue = '';
-
-    switch (code) {
-        case 'ER_DUP_ENTRY':
-            errValue = err.sqlMessage.split('\'')[1];
-            newError.message = `${errValue} is already exist`;
-            newError.status = 400;
-            return newError;
-        default:
-            newError.message = code;
-            newError.status = 500;
-            return newError;
-    }
 };
 
 module.exports = {

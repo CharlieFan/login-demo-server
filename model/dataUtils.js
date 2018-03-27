@@ -19,6 +19,25 @@ const dataFormator = function(data, schema) {
     return data;
 };
 
+const dbErrhandler = function(err) {
+    let code = err.code;
+    let newError = new Error();
+    let errValue = '';
+
+    switch (code) {
+        case 'ER_DUP_ENTRY':
+            errValue = err.sqlMessage.split('\'')[1];
+            newError.message = `${errValue} is already exist`;
+            newError.status = 400;
+            return newError;
+        default:
+            newError.message = code;
+            newError.status = 500;
+            return newError;
+    }
+};
+
 module.exports = {
-    dataFormator
+    dataFormator,
+    dbErrhandler
 };

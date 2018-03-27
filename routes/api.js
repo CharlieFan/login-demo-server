@@ -70,11 +70,10 @@ router.post('/todos/add', authenticate, function(req, res, next) {
         owner_id: req.id
     }, req.body, req.id);
     // res.status(200).send(data);
+    // console.log(data)
+    
     controller.todos.addNew(data).then((reply) => {
-        // res.status(200).send({
-        //     id,
-        //     msg: 'add'
-        // });
+        res.status(200).send(reply);
     }).catch((err) => {
         next(err);
     });
