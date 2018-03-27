@@ -24,16 +24,15 @@ const todoSchema = {
 
 /**
  * Add New Todo
- *
- * @param {*} data 
  */
 const addNew = function (data) {
     if (!data) {
         return Promise.reject(errMaker('no data', 400));
     }
+    
+    data = dataFormator(data, todoSchema);
 
     return new Promise((resolve, reject) => {
-        data = dataFormator(data, todoSchema);
         Promise.all([
             validate({
                 value: data.owner_id,
@@ -71,6 +70,84 @@ const addNew = function (data) {
     });
 };
 
+/**
+ * Edit a Todo by using todo id
+ */
+const editSchema = {
+    id: {
+        type: 'number',
+        isRequired: true
+    },
+    content: {
+        type: 'text',
+        isRequired: true,
+        trim: true
+    },
+    finish: {
+        type: 'number',
+        defaultValue: 0,
+        min: 0,
+        max: 1
+    },
+    owner_id: {
+        type: 'number',
+        isRequired: true
+    },
+};
+
+const updateTodoById = function(data) {
+    if (!data) {
+        return Promise.reject(errMaker('no data', 400));
+    }
+    data = dataFormator(data, editSchema);
+
+    return new Promise((resolve, reject) => {
+        Promise.all([
+            validate({
+                value: data.id,
+                name: 'todo id'
+            }, editSchema.id),
+            validate({
+                value: data.content,
+                name: 'content'
+            }, editSchema.content),
+            validate({
+                value: data.finish,
+                name: 'finish'
+            }, editSchema.finish),
+            validate({
+                value: data.owner_id,
+                name: 'owner id'
+            }, editSchema.owner_id)
+        ]).then(() => {
+            let sql = 'UPDATE todos SET content = ?, finish = ?, timestamp = ? WHERE todo_id = ?';
+
+            let CURRENT_TIMESTAMP = { toSqlString: function() {
+                return 'CURRENT_TIMESTAMP()';
+            }};
+
+            pool.query(sql, [
+                data.content,
+                data.finish,
+                CURRENT_TIMESTAMP,
+                data.id,
+                data.owner_id
+            ], function(err) {
+                if (err) {
+                    return reject(dbErrHandler(err));
+                }
+
+                return resolve({msg: 'Updated successfully'});
+            });
+
+        }).catch((err) => {
+            reject(errMaker(err, 400));
+        });
+    });
+};
+
+
 module.exports = {
-    addNew
+    addNew,
+    updateTodoById
 };

@@ -4,7 +4,7 @@ const redisClient = require('./connection').client;
 const errMaker = require('../utils/utils').errorMaker;
 const hashing = require('../middleware/hashing');
 const dataFormator = require('./dataUtils').dataFormator;
-const dbErrhandler = require('./dataUtils').dbErrhandler
+const dbErrhandler = require('./dataUtils').dbErrhandler;
 // console.log(hashing)
 
 const ExpireTime = 60 * 60;

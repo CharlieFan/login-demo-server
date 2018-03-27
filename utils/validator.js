@@ -22,7 +22,7 @@ const validateRules = {
     isNumber(value, name) {
         return new Promise((resolve, reject) => {
             if (typeof(value) !== 'number') {
-                reject(new Error(`${name} must be a number`))
+                reject(new Error(`${name} must be a number`));
             } else {
                 resolve(true);
             }

@@ -5,6 +5,7 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var api = require('./routes/api');
+var todos = require('./routes/todos');
 var app = express();
 
 // view engine setup
@@ -30,6 +31,7 @@ app.use(function(req, res, next) {
 
 // Route Middlewares:
 app.use('/api', api);
+app.use('/api/todos', todos);
 app.all('/*', function (req, res) {
     res.sendFile(path.join(__dirname, 'public/index.html'));
 }); // Fallback to index.html for React Router
