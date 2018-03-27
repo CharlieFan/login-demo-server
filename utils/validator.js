@@ -1,7 +1,7 @@
 const validateRules = {
     required(value, name) {
         return new Promise((resolve, reject) => {
-            if (value) {
+            if (value || value === 0) {
                 resolve(true);
             } else {
                 reject(new Error(`${name} is required`));

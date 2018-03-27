@@ -39,7 +39,20 @@ const editTodo = function(req) {
     });
 };
 
+// Get Todo list by ownerId:
+const getList = function(req) {
+    if (!req) return Promise.reject(errorMaker('bad request'), 400);
+    return new Promise((resolve, reject) => {
+        todoModel.getTodosListbyId(req.id).then((reply) =>{
+            resolve(reply);
+        }).catch((err) => {
+            reject(err);
+        });
+    });
+};
+
 module.exports = {
     addNew,
-    editTodo
+    editTodo,
+    getList
 };

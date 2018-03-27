@@ -25,4 +25,15 @@ router.post('/edit', authenticate, function(req, res, next) {
     });
 });
 
+/**
+ * Get Todo list;
+ */
+router.get('/getList', authenticate, function(req, res, next) {
+    controller.todos.getList(req).then((reply) => {
+        res.status(200).send(reply);
+    }).catch((err) => {
+        next(err);
+    });
+});
+
 module.exports = router;

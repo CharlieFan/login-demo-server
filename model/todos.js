@@ -141,13 +141,45 @@ const updateTodoById = function(data) {
             });
 
         }).catch((err) => {
-            reject(errMaker(err, 400));
+            return reject(errMaker(err, 400));
         });
     });
 };
 
+// Get todo list by owner_id
+const getTodosListbyId = function(id) {
+    if (!id && typeof(id) !== 'number') {
+        return Promise.reject(errMaker('invalid id', 400));
+    }
+
+    return new Promise((resolve, reject) => {
+        let sql = 'SELECT * FROM todos WHERE owner_id = ?';
+        
+        pool.query(sql, [id], function(err, result) {
+            if (err) {
+                return reject(dbErrHandler(err));
+            }
+
+            if (result && result.length > 0) {
+                let reply = result.map((item) => {
+                    return {
+                        todo_id: item.todo_id,
+                        content: item.content,
+                        finish: item.finish,
+                        timestamp: item.timestamp
+                    };
+                });
+
+                return resolve(reply);
+            }
+
+            return resolve([]);
+        });
+    });
+};
 
 module.exports = {
     addNew,
-    updateTodoById
+    updateTodoById,
+    getTodosListbyId
 };
